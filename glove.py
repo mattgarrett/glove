@@ -3,10 +3,22 @@
 
 import os, sys
 import pygame
+import gflags
 import network
 from pygame.locals import *
 
-netMan = network.networkManager(sys.argv)
+FLAGS = gflags.FLAGS
+
+gflags.DEFINE_string("mode", None, "join, host, or dedicated",
+        short_name="m")
+gflags.DEFINE_string("dedicated_ip", None, "ip to run the dedicated service on",
+        short_name="dip")
+gflags.DEFINE_integer("dedicated_port", None, "port to run the dedicated service on",
+        short_name="dp")
+
+FLAGS(sys.argv)
+
+netMan = network.networkManager(FLAGS.mode, FLAGS.dedicated_ip, FLAGS.dedicated_port)
 
 if not pygame.font:
     print 'Warning, fonts disabled'

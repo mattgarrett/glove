@@ -3,14 +3,9 @@
 import socket
 
 class networkManager:
-    def __init__(self, argv):
-        if len(argv) < 2:
-            raise Exception("netMan missing args")
-        if not (argv[1] == "host" or argv[1] == "join" or argv[1] == "dedicated"):
-            raise Exception("netMan bad argv[1]")
-        
-        self.mode = argv[1]
-        if argv[1] == "join":
+    def __init__(self, mode, ip, port):
+        self.mode = mode
+        if mode == "join":
             #TODO(mattgarrett): figure out how to join
             print("joining...")
             host = "127.0.1.1"
@@ -22,17 +17,15 @@ class networkManager:
             print data
             self.s.close()
 
-        elif argv[1] == "host":
+        elif mode == "host":
             #TODO(mattgarrett): figure out how to host
             print("hosting...")
-        else: #argv[1] == "dedicated"
+        else: #mode == "dedicated"
             #TODO(mattgarrett): figure out how to dedicated host
             print("dedicated hosting...")
             self.s = socket.socket()
-            host = socket.gethostbyname(socket.gethostname())
-            port = 12345
             print host
-            self.s.bind((host, port))
+            self.s.bind((ip, port))
             self.s.listen(5)
             while True:
                 print "trying for connection..."
