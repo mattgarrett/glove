@@ -1,3 +1,5 @@
+client/sprite_handler.py
+
 *.py[cod]
 
 # C extensions
