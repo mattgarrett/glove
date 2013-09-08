@@ -24,7 +24,7 @@ class SpriteHandlerGenerator(object):
             "",
             "   def getSprite(self, reference):",
             "       if hasattr(Sprites, reference):",
-            "           return getattr(self, reference)",
+            "           return FILEPATHS[getattr(Sprites, reference)]",
             "       else:",
             "           raise NoSuchSpriteException()",
             "",
@@ -57,7 +57,7 @@ class SpriteHandlerGenerator(object):
 
         return generated
 
-    def generate_filepaths(self, references, spriteFiles):
+    def generateFilepaths(self, references, spriteFiles):
         filePathDict = self.FILEPATH_TEMPLATE_START
 
         zippedTogether = zip(references, spriteFiles)
@@ -70,11 +70,11 @@ class SpriteHandlerGenerator(object):
 
         return filePathDict
 
-    def generate_constants(self, references):
+    def generateConstants(self, references):
         definitions = map(lambda r: r + " = \"" + r + "\"", references)
         return "\n    " + "\n    ".join(definitions)
 
-    def create_references(self, spriteFiles):
+    def createReferences(self, spriteFiles):
         fileNames = map(lambda f: os.path.basename(f), spriteFiles)
         withoutFileEnding = map(lambda f: str(f[:-FILE_ENDING_LENGTH]), fileNames)
         return map(lambda f: f.upper(), withoutFileEnding)
