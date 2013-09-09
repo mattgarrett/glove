@@ -1,0 +1,10 @@
+package state;
+
+message Request {
+	required RequestType type = 1;
+
+	enum RequestType {
+	     INFO = 0;
+	     JOIN = 1;
+	}
+}
