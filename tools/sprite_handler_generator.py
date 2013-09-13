@@ -16,15 +16,27 @@ FILE_ENDING_LENGTH = 4
 class SpriteHandlerGenerator(object):
 
     MAIN_TEMPLATE = [
+            "import pygame.image",
+            "",
+            "",
             "class NoSuchSpriteException(Exception):",
             "   pass",
             "",
             "",
             "class SpriteHandler(object):",
             "",
+            "   sprites = {}",
+            "",
+            "   def __init__(self, absSpritePath):",
+            "       self.absSpritePath = absSpritePath",
+            "",
             "   def getSprite(self, reference):",
             "       if hasattr(Sprites, reference):",
-            "           return FILEPATHS[getattr(Sprites, reference)]",
+            "           spriteId = getattr(Sprites, reference)",
+            "           if spriteId not in self.sprites:",
+            ("               self.sprites[spriteId] = "
+                "pygame.image.load(self.absSpritePath + self.FILEPATHS[spriteId])"),
+            "           return self.sprites[spriteId]",
             "       else:",
             "           raise NoSuchSpriteException()",
             "",
