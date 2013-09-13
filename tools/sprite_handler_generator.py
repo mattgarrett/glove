@@ -44,15 +44,15 @@ class SpriteHandlerGenerator(object):
         pass
 
     def generate(self, spriteFiles):
-        references = self.create_references(spriteFiles)
+        references = self.createReferences(spriteFiles)
 
         generated = "\n".join(self.SPRITES_TEMPLATE)
-        generated += self.generate_constants(references)
+        generated += self.generateConstants(references)
         generated += "\n"
         generated += "\n"
         generated += "\n"
         generated += "\n".join(self.MAIN_TEMPLATE)
-        generated += self.generate_filepaths(references, spriteFiles)
+        generated += self.generateFilepaths(references, spriteFiles)
         generated += "\n"
 
         return generated
