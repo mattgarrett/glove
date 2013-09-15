@@ -1,0 +1,10 @@
+package state;
+
+message Response {
+	required Response response = 1;
+
+	enum Response {
+	     IN = 0;
+	     OUT = 1;
+	}
+}
