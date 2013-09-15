@@ -41,7 +41,7 @@ class Client:
             sock.close()
         except socket.error as e:
             if e.errno != socket.errno.ECONNREFUSED:
-                    #some other error
+                #some other error
                 raise e
                 
 def main():

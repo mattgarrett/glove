@@ -4,7 +4,7 @@ message Request {
 	required RequestType type = 1;
 
 	enum RequestType {
-	     INFO = 0;
-	     JOIN = 1;
+	     JOIN_GAME = 0;
+	     GET_STATE = 1;
 	}
 }
