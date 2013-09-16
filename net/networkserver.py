@@ -32,7 +32,7 @@ class GloveThreadedUDPHandler(SocketServer.DatagramRequestHandler):
 class GloveThreadedUDPServer(SocketServer.ThreadingMixIn, SocketServer.UDPServer):
     pass
 
-class GloveServer():
+class NetworkServer():
     def __init__(self):
         FLAGS(sys.argv)
         self.host = FLAGS.host

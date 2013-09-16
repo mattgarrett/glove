@@ -11,7 +11,7 @@ gflags.DEFINE_string("host", None, "the server to connect to",
 gflags.DEFINE_integer("port", None, "the port to connect on",
         short_name="p")
 
-class Client:
+class NetworkClient:
     def __init__(self, argv):
         FLAGS(argv)
         self.host = FLAGS.host
