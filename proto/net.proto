@@ -1,0 +1,32 @@
+package glove.net;
+
+message Request {
+	required RequestType type = 1;
+
+	enum RequestType {
+	     JOIN_GAME = 0;
+	     GET_STATE = 1;
+	     QUIT_GAME = 2;
+	}
+}
+
+message Response {
+	required Response response = 1;
+
+	enum Response {
+	     OKAY = 0;
+	     NOPE = 1;
+	     BAD = 2;
+	     STATE = 4;
+	}
+}
+
+message State {
+	required GameState gameState = 1;
+
+	enum GameState {
+	     INITIAL = 0;
+	     RUNNING = 1;
+	     ENDED = 2;
+	}
+}

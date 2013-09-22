@@ -2,7 +2,7 @@
 
 import socket, sys
 import gflags
-import proto.request_pb2
+import proto.net_pb2 as net
 
 FLAGS = gflags.FLAGS
 
@@ -20,14 +20,22 @@ class NetworkClient:
         if not (self.host and self.port):
             raise Exception("must include the flags --host and --port")
 
-    def run(self):
-        print "...joining server at"
-        print ".....host: " + self.host
-        print ".....port: " + str(self.port)
+    def join(self):
+        request = net.Request()
+        request.type = net.Request.JOIN_GAME
+        return self.sendRequestGetResponse(request)
 
-        request = proto.request_pb2.Request()
-        request.type = proto.request_pb2.Request.INFO
+    def quit(self):
+        request = net.Request()
+        request.type = net.Request.QUIT_GAME
+        return self.sendRequestGetResponse(request)
 
+    def sendMoveGetState(self, move):
+        request = net.Request()
+        request.type = net.Request.GET_STATE
+        return self.sendRequestGetResponse(request)
+
+    def sendRequestGetResponse(self, request):
         try:
             sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
             print "...connecting"
@@ -35,18 +43,21 @@ class NetworkClient:
             sock.send(request.SerializeToString())
 
             received = sock.recv(1024)
-            payload = proto.request_pb2.Request()
-            payload.ParseFromString(received)
-            print "...received: " + str(payload)
+            response = net.Response()
+            response.ParseFromString(received)
             sock.close()
+            return response
         except socket.error as e:
             if e.errno != socket.errno.ECONNREFUSED:
                 #some other error
                 raise e
-                
+            else:
+                print "couldn't connect to server"
+            return None
+
 def main():
-    client = Client(sys.argv)
-    client.run()
+    client = NetworkClient(sys.argv)
+    print str(client.join())
 
 if __name__ == "__main__":
     main()

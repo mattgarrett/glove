@@ -6,8 +6,7 @@ import socket
 import threading
 import signal
 import SocketServer
-import proto.state_pb2
-import proto.request_pb2
+import proto.net_pb2 as net
 
 FLAGS = gflags.FLAGS
 
@@ -18,20 +17,51 @@ gflags.DEFINE_integer("port", None, "port to run the dedicated service on",
 
 class GloveThreadedUDPHandler(SocketServer.DatagramRequestHandler):
     def handle(self):
-        data = self.request[0].strip()
-        payload = proto.request_pb2.Request()
-        payload.ParseFromString(data)
-        socket = self.request[1]
+        request, socket = self.getRequestAndSocket()
+        manager = getNetworkServer()
         
-        print "received:" + str(payload)
-        response = payload #for now just echo the request
+        if (request.type == net.Request.JOIN_GAME):
+            #log that the user wants in
+            #somehow assign a ID?
+            response = net.Response()
+            response.response = net.Response.OKAY
+        elif (request.type == net.Request.GET_STATE):
+            response = net.State()
+        elif (request.type == net.Request.QUIT_GAME):
+            #notify game manager of quit
+            response = net.Response()
+            response.response = net.Response.OKAY
+        else:
+            print "unknown request: " + str(request)
+            response = net.Response()
+            response.response = net.Response.BAD
         
-        print "response: " + str(response)
         socket.sendto(response.SerializeToString(), self.client_address)
+
+    #returns the Request proto and the socket to respond with
+    def getRequestAndSocket(self):
+        request = net.Request()
+        request.ParseFromString(self.request[0].strip())
+        return request, self.request[1]
 
 class GloveThreadedUDPServer(SocketServer.ThreadingMixIn, SocketServer.UDPServer):
     pass
 
+#A singleton for the server network manager.
+#I can't really enforce the singleton pattern because
+#I dont' know much about python.
+instance = None
+def getNetworkServer():
+    global instance
+    if (instance == None):
+        instance = NetworkServer()
+    return instance
+
+#The server side of the network manager.
+#It is expected that setState be called
+#often with the state of the game.
+#It is also expected that getRequests
+#be called often.
 class NetworkServer():
     def __init__(self):
         FLAGS(sys.argv)
@@ -59,11 +89,15 @@ class NetworkServer():
     def setState(self, state):
         #TODO(mattgarrett): figure out how to get state into the socket
         self.state = state
+
+    # use this to get things like players waiting to join
+    def getRequests(self):
+        print "getRequests not implemented"
     
 if __name__ == "__main__":
-    server = NetworkServer()
-    state = proto.state_pb2.State()
-    state.gameState = proto.state_pb2.State.INITIAL
+    server = getNetworkServer()
+    state = net.State()
+    state.gameState = net.State.INITIAL
     server.start(state)
     var = raw_input("Enter to exit...")
     server.stop()
