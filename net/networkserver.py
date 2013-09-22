@@ -61,7 +61,7 @@ class NetworkServer():
         self.state = state
     
 if __name__ == "__main__":
-    server = GloveServer()
+    server = NetworkServer()
     state = proto.state_pb2.State()
     state.gameState = proto.state_pb2.State.INITIAL
     server.start(state)
