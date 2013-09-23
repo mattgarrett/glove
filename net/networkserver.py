@@ -6,7 +6,7 @@ import socket
 import threading
 import signal
 import SocketServer
-import proto.net_pb2 as net
+import proto.net_pb2 as proto
 
 FLAGS = gflags.FLAGS
 
@@ -20,27 +20,27 @@ class GloveThreadedUDPHandler(SocketServer.DatagramRequestHandler):
         request, socket = self.getRequestAndSocket()
         manager = getNetworkServer()
         
-        if (request.type == net.Request.JOIN_GAME):
+        if (request.type == proto.Request.JOIN_GAME):
             #log that the user wants in
             #somehow assign a ID?
-            response = net.Response()
-            response.response = net.Response.OKAY
-        elif (request.type == net.Request.GET_STATE):
-            response = net.State()
-        elif (request.type == net.Request.QUIT_GAME):
+            response = proto.Response()
+            response.response = proto.Response.OKAY
+        elif (request.type == proto.Request.GET_STATE):
+            response = proto.State()
+        elif (request.type == proto.Request.QUIT_GAME):
             #notify game manager of quit
-            response = net.Response()
-            response.response = net.Response.OKAY
+            response = proto.Response()
+            response.response = proto.Response.OKAY
         else:
             print "unknown request: " + str(request)
-            response = net.Response()
-            response.response = net.Response.BAD
+            response = proto.Response()
+            response.response = proto.Response.BAD
         
         socket.sendto(response.SerializeToString(), self.client_address)
 
     #returns the Request proto and the socket to respond with
     def getRequestAndSocket(self):
-        request = net.Request()
+        request = proto.Request()
         request.ParseFromString(self.request[0].strip())
         return request, self.request[1]
 
@@ -94,10 +94,13 @@ class NetworkServer():
     def getRequests(self):
         print "getRequests not implemented"
     
-if __name__ == "__main__":
+def main():
     server = getNetworkServer()
-    state = net.State()
-    state.gameState = net.State.INITIAL
+    state = proto.State()
+    state.gameState = proto.State.INITIAL
     server.start(state)
     var = raw_input("Enter to exit...")
     server.stop()
+
+if __name__ == "__main__":
+    main()

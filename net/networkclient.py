@@ -2,7 +2,7 @@
 
 import socket, sys
 import gflags
-import proto.net_pb2 as net
+import proto.net_pb2 as proto
 
 FLAGS = gflags.FLAGS
 
@@ -21,18 +21,18 @@ class NetworkClient:
             raise Exception("must include the flags --host and --port")
 
     def join(self):
-        request = net.Request()
-        request.type = net.Request.JOIN_GAME
+        request = proto.Request()
+        request.type = proto.Request.JOIN_GAME
         return self.sendRequestGetResponse(request)
 
     def quit(self):
-        request = net.Request()
-        request.type = net.Request.QUIT_GAME
+        request = proto.Request()
+        request.type = proto.Request.QUIT_GAME
         return self.sendRequestGetResponse(request)
 
     def sendMoveGetState(self, move):
-        request = net.Request()
-        request.type = net.Request.GET_STATE
+        request = proto.Request()
+        request.type = proto.Request.GET_STATE
         return self.sendRequestGetResponse(request)
 
     def sendRequestGetResponse(self, request):
@@ -43,7 +43,7 @@ class NetworkClient:
             sock.send(request.SerializeToString())
 
             received = sock.recv(1024)
-            response = net.Response()
+            response = proto.Response()
             response.ParseFromString(received)
             sock.close()
             return response
