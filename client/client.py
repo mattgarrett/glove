@@ -18,11 +18,19 @@ spriteHandler = sprite_handler.SpriteHandler("client/resources/sprites/")
 stoneTileSprite = spriteHandler.getSprite(sprite_handler.Sprites.STONE_TILE)
 woodenBoxSprite = spriteHandler.getSprite(sprite_handler.Sprites.WOODEN_BOX)
 
-alexMillerCreature = creature.AlexMiller(3, 3, spriteHandler)
+alexMillerCreature = creature.AlexMiller(30, 30, spriteHandler)
 ghost = creature.Ghost(60, 60, spriteHandler)
 
 room = room.Load("client/resources/rooms/first.room")
 key = None
+
+class Thunderbolt(object):
+
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+thunderbolt = None
 
 i = 1000
 while True:
@@ -45,6 +53,9 @@ while True:
             alexMillerCreature.moveLeft()
         if key == pygame.K_RIGHT:
             alexMillerCreature.moveRight()
+        if key == pygame.K_SPACE:
+            alexMillerCreature.attack()
+            thunderbolt = Thunderbolt(alexMillerCreature.x, alexMillerCreature.y)
 
     for x in range(0, room.getWidth() - 1):
         for y in range(0, room.getHeight()):
@@ -61,6 +72,11 @@ while True:
         alexMillerCreature.x, alexMillerCreature.y))
     window.surface.blit(spriteHandler.getSprite(ghost.getSpriteName()), (
         ghost.x, ghost.y))
+
+    if thunderbolt:
+        window.surface.blit(spriteHandler.getSprite(sprite_handler.Sprites.THUNDERBOLT), (
+            thunderbolt.x, thunderbolt.y))
+        thunderbolt.y += 8
 
     window.update()
     graphics.UpdateScreen()
