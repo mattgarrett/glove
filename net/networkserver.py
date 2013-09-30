@@ -1,5 +1,7 @@
 #!/usr/bin/python2
 
+#from __future__ import with_statment
+
 import sys
 import gflags
 import socket
@@ -19,17 +21,24 @@ class GloveThreadedUDPHandler(SocketServer.DatagramRequestHandler):
     def handle(self):
         request, socket = self.getRequestAndSocket()
         manager = getNetworkServer()
+        connections = manager.connections
         
+        #deal with locking later
+        #with lock:
+        response = proto.Response()
         if (request.type == proto.Request.JOIN_GAME):
             #log that the user wants in
             #somehow assign a ID?
-            response = proto.Response()
-            response.response = proto.Response.OKAY
+            connections.append([])
+            response.id = len(connections) - 1
+            response.type = proto.Response.OKAY
         elif (request.type == proto.Request.GET_STATE):
-            response = proto.State()
+            connections[request.id] = request.moves
+            response.id = request.id
+            response.state = manager.getState()
+            response.type = proto.Response.STATE
         elif (request.type == proto.Request.QUIT_GAME):
-            #notify game manager of quit
-            response = proto.Response()
+            connections[request.id] = "quit"
             response.response = proto.Response.OKAY
         else:
             print "unknown request: " + str(request)
@@ -67,10 +76,12 @@ class NetworkServer():
         FLAGS(sys.argv)
         self.host = FLAGS.host
         self.port = FLAGS.port
+        self.connections = []
 
         if not (self.host and self.port):
             raise Exception("must include flags --host and --port")
         
+    # todo(matt): remove the state param here
     def start(self, state):        
         self.state = state
 
@@ -90,9 +101,17 @@ class NetworkServer():
         #TODO(mattgarrett): figure out how to get state into the socket
         self.state = state
 
+    def getState(self):
+        return self.state
+
     # use this to get things like players waiting to join
+    # or moves that players have made
     def getRequests(self):
-        print "getRequests not implemented"
+        tempConnections = []
+        for x in self.connections:
+            tempConnections.append(x)
+        filter(lambda x: x != "quit", self.connections)
+        return tempConnections
     
 def main():
     server = getNetworkServer()
