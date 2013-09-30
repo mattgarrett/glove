@@ -11,9 +11,10 @@ message Request {
 }
 
 message Response {
-	required Response response = 1;
+	required ResponseType type = 1;
+	optional State state = 2;
 
-	enum Response {
+	enum ResponseType {
 	     OKAY = 0;
 	     NOPE = 1;
 	     BAD = 2;
