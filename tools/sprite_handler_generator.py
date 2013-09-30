@@ -38,7 +38,7 @@ class SpriteHandlerGenerator(object):
                 "pygame.image.load(self.absSpritePath + self.FILEPATHS[spriteId])"),
             "           return self.sprites[spriteId]",
             "       else:",
-            "           raise NoSuchSpriteException()",
+            "           raise NoSuchSpriteException(reference)",
             "",
             ""
             ]
