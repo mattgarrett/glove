@@ -6,7 +6,6 @@ import time
 import proto.net_pb2 as proto
 import net.networkclient
 
-
 def signalHandler(signal, frame):
     print "got interrupt"
     server = getServer()

@@ -12,15 +12,15 @@ gflags.DEFINE_integer("port", None, "the port to connect on",
         short_name="p")
 
 instance = None
-def getClient(argv):
+def getClient():
     global instance
     if (instance == None):
-        instance = NetworkClient(argv)
+        instance = NetworkClient()
     return instance
 
 class NetworkClient:
-    def __init__(self, argv):
-        FLAGS(argv)
+    def __init__(self):
+        FLAGS(sys.argv)
         self.host = FLAGS.host
         self.port = FLAGS.port
 
@@ -63,7 +63,7 @@ class NetworkClient:
             return None
 
 def main():
-    client = getClient(sys.argv)
+    client = getClient()
     print str(client.join())
 
 if __name__ == "__main__":
