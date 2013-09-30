@@ -7,6 +7,7 @@ class Creature(object):
     ATTACK_DURATION = 0.5
 
     def __init__(self, x, y):
+        self.direction = 0
         self.x = x
         self.y = y
         self.ticks = 0
@@ -38,25 +39,64 @@ class Creature(object):
 
         breathing = int(self.time) % 2 == 0
         armSwings = int(self.moving) and (int(self.time) % 2 == 0)
-        return self.sprites[armSwings][breathing]
+        return self.sprites[self.direction][armSwings][breathing]
 
 class Ghost(Creature):
 
     def __init__(self, x, y, spriteHandler):
         super(Ghost, self).__init__(x, y)
-        self.sprites = [
+        self.sprites = [[
                 [sprite_handler.Sprites.GHOST11,
                     sprite_handler.Sprites.GHOST12],
                 [sprite_handler.Sprites.GHOST21,
-                    sprite_handler.Sprites.GHOST22]]
+                    sprite_handler.Sprites.GHOST22]]]
+
+class PerLarsson(Creature):
+
+    def __init__(self, x, y, spriteHandler):
+        super(PerLarsson, self).__init__(x, y)
+        self.sprites = [[
+                [sprite_handler.Sprites.PER_LARSSON11,
+                    sprite_handler.Sprites.PER_LARSSON11],
+                [sprite_handler.Sprites.PER_LARSSON11,
+                    sprite_handler.Sprites.PER_LARSSON11]],
+                [[sprite_handler.Sprites.PER_LARSSON11,
+                    sprite_handler.Sprites.PER_LARSSON11],
+                [sprite_handler.Sprites.PER_LARSSON11,
+                    sprite_handler.Sprites.PER_LARSSON11]]]
+
+        self.attackSprite = sprite_handler.Sprites.ALEX_MILLER_ATTACK
+
+
+class MattGarret(Creature):
+
+    def __init__(self, x, y, spriteHandler):
+        super(MattGarret, self).__init__(x, y)
+        self.sprites = [[
+                [sprite_handler.Sprites.MATT_GARRET11,
+                    sprite_handler.Sprites.MATT_GARRET11],
+                [sprite_handler.Sprites.MATT_GARRET11,
+                    sprite_handler.Sprites.MATT_GARRET11]],
+                [[sprite_handler.Sprites.MATT_GARRET11,
+                    sprite_handler.Sprites.MATT_GARRET11],
+                [sprite_handler.Sprites.MATT_GARRET11,
+                    sprite_handler.Sprites.MATT_GARRET11]]]
+
+        self.attackSprite = sprite_handler.Sprites.ALEX_MILLER_ATTACK
+
 
 class AlexMiller(Creature):
 
     def __init__(self, x, y, spriteHandler):
         super(AlexMiller, self).__init__(x, y)
-        self.sprites = [
+        self.sprites = [[
                 [sprite_handler.Sprites.ALEX_MILLER11,
                     sprite_handler.Sprites.ALEX_MILLER12],
                 [sprite_handler.Sprites.ALEX_MILLER21,
-                    sprite_handler.Sprites.ALEX_MILLER22]]
+                    sprite_handler.Sprites.ALEX_MILLER22]],
+                [[sprite_handler.Sprites.ALEX_MILLER_UP11,
+                    sprite_handler.Sprites.ALEX_MILLER_UP12],
+                [sprite_handler.Sprites.ALEX_MILLER_UP11,
+                    sprite_handler.Sprites.ALEX_MILLER_UP12]]]
+
         self.attackSprite = sprite_handler.Sprites.ALEX_MILLER_ATTACK
